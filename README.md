@@ -1,3 +1,3 @@
 # BOK-Projekt
 
-I don't know what im doing
+Alles noch etwas suboptimal, doch schwieriger als gedacht :)
