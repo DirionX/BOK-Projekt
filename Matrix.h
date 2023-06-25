@@ -9,9 +9,9 @@ double** matrix;
 
 public:
 // Spalten
-const int COLS;
+const int N;
 // Reihen
-const int ROWS;
+const int M;
 // Constructor
 Matrix(int n, int m);
 // Quadratischer Matrix Konstruktor
