@@ -25,6 +25,8 @@ void set_M(double** mat);
 // Überladen von [] um auf Inhalt zugreifen zu können und zu überarbeiten
 double*& operator[](int i);
 
+// plus overload
+Matrix operator+(const Matrix& a);
 
 void show();
 // Matrix sezten (erst mal direkt in der Zukunft vielleicht lieber über ein Textdokument einlesen)
