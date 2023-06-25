@@ -12,7 +12,7 @@ Matrix::Matrix(int n, int m) : COLS(n), ROWS(m){
         for (int j = 0; j < m; j ++) {
             double eintrag = 0;
             if (i == j) {
-                eintrag = 1;
+                eintrag = 0;
             }
             matrix[i][j] = eintrag;
         }
