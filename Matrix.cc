@@ -4,7 +4,7 @@
 // Definitionen für die Matrix Klasse
 
 // Construktor Definition, ist etwas fancy und verwirrend aber funktioniert hoffentlich.
-Matrix::Matrix(int n, int m) : COLS(n), ROWS(m){
+Matrix::Matrix(int n, int m) : N(n), M(m){
     // n sind Spalten; m sind Reihen (glaub ich zumindest)
     matrix = new double*[n];
     for (int i = 0; i < n; i++){
@@ -18,7 +18,7 @@ Matrix::Matrix(int n, int m) : COLS(n), ROWS(m){
         }
     }
 }
-Matrix::Matrix(int n): COLS(n), ROWS(n) {
+Matrix::Matrix(int n): N(n), M(n) {
     matrix = new double*[n];
     for (int i = 0; i < n; i++){
         matrix[i] = new double[n];
@@ -35,7 +35,7 @@ Matrix::Matrix(int n): COLS(n), ROWS(n) {
 
 
 Matrix::~Matrix() {
-    for (int i = 0; i < COLS; i ++) {
+    for (int i = 0; i < N; i ++) {
         delete[] matrix[i];
     }
     delete[] matrix;
@@ -44,7 +44,7 @@ Matrix::~Matrix() {
 
 double*& Matrix::operator[](int i) {
     /*Liefert eine Referenz auf den Pointer, sd mit mat[i] überschrieben werden kann */
-    if (i < ROWS && 0 <= i) {
+    if (i < M && 0 <= i) {
         return matrix[i];
     }
     else {
@@ -55,10 +55,10 @@ double*& Matrix::operator[](int i) {
 
 void Matrix::show(){
     //Mega ätzend zu printen...
-    for (int i = 0; i<COLS; i++){
+    for (int i = 0; i<N; i++){
         std::cout << "[";
-        for (int j = 0; j<ROWS; j++){
-            if (j == ROWS - 1){
+        for (int j = 0; j<M; j++){
+            if (j == M - 1){
                 std::cout << matrix[i][j];
             }else{
                 std::cout << matrix[i][j] << ",";
