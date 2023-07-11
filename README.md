@@ -16,7 +16,7 @@ to-implement liste:
 - Klasse Zeilen-Operation
 
 
--Einlesen von Textfiles
+- Einlesen von Textfiles
 
 
 - Unit-Tests
