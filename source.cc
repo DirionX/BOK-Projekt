@@ -2,13 +2,24 @@
 #include "Matrix.h"
 
 int main(){
-    // verstehe ich jetzt auch nicht mehr um ehrlich zu sein... Funktioniert aber.
+    Matrix vec(3,1);
+    vec[0][0] = 1;
+    vec[1][0] = 2;
+    vec[2][0] = 3; 
+    //z_vec.show();
+    //Matrix s_vec = z_vec.transposition();
+    //s_vec.show();
     Matrix mat3x3(3,3);
-    mat3x3.show();
-    std::cout <<mat3x3[0][0] << std::endl;
-    double new_line[3] = {3, 4, 5};
+    Matrix mat3x3_1(3,3);
+    //mat3x3.show();
+    double new_line[3] = {1, 2, 3};
     mat3x3[0] = new_line;
-    std::cout <<mat3x3[0][2] << std::endl;
-
-
+    mat3x3[1] = new_line;
+    mat3x3[2] = new_line;
+    //mat3x3.show();
+    //Matrix transponiert = mat3x3.transposition();
+    //transponiert.show();
+    Matrix sum(3,3);
+    sum = vec;
+    sum.show();
 }
