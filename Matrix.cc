@@ -146,4 +146,25 @@ Matrix operator*(Matrix &mat, double lambda) {
     return product;
 }
 
-
+bool Matrix::zsf(){
+    int not_zero_i = -1;
+    int new_zero_i = -1;
+    for (int i = 0; i < this->M; i++) {
+        for (int j = 0; j < this->N; j++){
+            if (matrix[i][j] != 0){
+                if(j <= not_zero_i){
+                    return false;
+                }else{
+                    not_zero_i = j;
+                    break;
+                }
+            }else{
+                new_zero_i = j;
+            }
+            if (new_zero_i > not_zero_i){
+                not_zero_i = new_zero_i;
+            }
+        }
+    }
+    return true;
+}
