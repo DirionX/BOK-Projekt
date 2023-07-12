@@ -28,6 +28,7 @@ double*& operator[](int i);
 Matrix transposition();
 Matrix operator+(Matrix &mat);
 Matrix& operator=(const Matrix &mat);
+Matrix operator*(Matrix &mat);
 
 
 void show();

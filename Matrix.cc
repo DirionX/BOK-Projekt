@@ -74,8 +74,8 @@ void Matrix::show(){
 }
 void Matrix::test(){
     std::cout << this->M << std::endl;
-
 }
+
 Matrix& Matrix::operator=(const Matrix &mat){
     if (!equal_size(mat)){
         std::cout << "Operation = not possible, sizes dont match" << std::endl;
@@ -98,6 +98,23 @@ Matrix Matrix::operator+(Matrix &mat) {
         }
         return sum;
     }
+}
+Matrix Matrix::operator*(Matrix &mat){
+    if (this->N != mat.M){
+        std::cout << "Operation * not possible, sizes dont match" << std::endl;
+        abort();
+    }
+    Matrix product(this->M, mat.N);
+    for (int i = 0; i < this->M; i++){
+        for (int j = 0; j < mat.N; j++){
+            double eintrag = 0;
+            for (int k = 0; k < this->N; k++) {
+                eintrag += this->matrix[i][k] * mat.matrix[k][j];
+            }
+            product[i][j] = eintrag;
+        }
+    }
+    return product;
 }
 
 bool Matrix::equal_size(const Matrix &mat){
