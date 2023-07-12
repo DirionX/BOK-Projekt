@@ -37,6 +37,7 @@ void show();
 // Matrix sezten (erst mal direkt in der Zukunft vielleicht lieber über ein Textdokument einlesen)
 void test();
 bool equal_size(const Matrix &mat);
+bool zsf();
 };
 
 
