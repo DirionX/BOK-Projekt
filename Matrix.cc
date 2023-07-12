@@ -1,4 +1,4 @@
-#include "Matrix.h"
+#include "Matrix(2).h"
 #include <iostream>
 
 // Definitionen für die Matrix Klasse
@@ -74,8 +74,8 @@ void Matrix::show(){
 }
 void Matrix::test(){
     std::cout << this->M << std::endl;
-}
 
+}
 Matrix& Matrix::operator=(const Matrix &mat){
     if (!equal_size(mat)){
         std::cout << "Operation = not possible, sizes dont match" << std::endl;
@@ -84,6 +84,7 @@ Matrix& Matrix::operator=(const Matrix &mat){
     this->matrix = mat.matrix;
     return *this;
 }
+
 Matrix Matrix::operator+(Matrix &mat) {
     if (!equal_size(mat)) {
         std::cout << "Operation + not possible, sizes dont match" << std::endl;
@@ -99,11 +100,8 @@ Matrix Matrix::operator+(Matrix &mat) {
         return sum;
     }
 }
+
 Matrix Matrix::operator*(Matrix &mat){
-    if (this->N != mat.M){
-        std::cout << "Operation * not possible, sizes dont match" << std::endl;
-        abort();
-    }
     Matrix product(this->M, mat.N);
     for (int i = 0; i < this->M; i++){
         for (int j = 0; j < mat.N; j++){
@@ -114,8 +112,11 @@ Matrix Matrix::operator*(Matrix &mat){
             product[i][j] = eintrag;
         }
     }
+    product.show();
     return product;
 }
+
+
 
 bool Matrix::equal_size(const Matrix &mat){
     if (this->M != mat.M || this->N != mat.N){
@@ -124,4 +125,25 @@ bool Matrix::equal_size(const Matrix &mat){
         return true;
     }
 }
+
+Matrix operator*(double lambda, Matrix &mat) {
+    Matrix product(mat.M, mat.N);
+    for (int i = 0; i < mat.M; i++) {
+        for (int j = 0; j < mat.N; j++) {
+            product[i][j] = mat[i][j] * lambda;
+        }
+    }
+    return product;
+}
+
+Matrix operator*(Matrix &mat, double lambda) {
+    Matrix product(mat.M, mat.N);
+    for (int i = 0; i < mat.M; i++) {
+        for (int j = 0; j < mat.N; j++) {
+            product[i][j] = mat[i][j] * lambda;
+        }
+    }
+    return product;
+}
+
 

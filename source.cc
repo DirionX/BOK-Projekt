@@ -1,11 +1,11 @@
 #include <iostream>
-#include "Matrix.h"
+#include "Matrix(2).h"
 
 int main(){
     Matrix vec(3,1);
     vec[0][0] = 1;
     vec[1][0] = 2;
-    vec[2][0] = 3; 
+    vec[2][0] = 3;
     //z_vec.show();
     //Matrix s_vec = z_vec.transposition();
     //s_vec.show();
@@ -19,7 +19,9 @@ int main(){
     //mat3x3.show();
     //Matrix transponiert = mat3x3.transposition();
     //transponiert.show();
-    Matrix sum(3,3);
-    sum = vec;
-    sum.show();
+    Matrix product(3,3);
+    mat3x3.show();
+    product = ( 4 * mat3x3);
+    product.show();
+
 }

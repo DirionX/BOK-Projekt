@@ -23,19 +23,23 @@ Matrix(int n);
 double*& operator[](int i);
 
 
+Matrix Gauss(Matrix &mat);
+
+Matrix operator*(Matrix &mat);
 
 
 Matrix transposition();
 Matrix operator+(Matrix &mat);
 Matrix& operator=(const Matrix &mat);
-Matrix operator*(Matrix &mat);
 
 
 void show();
 // Matrix sezten (erst mal direkt in der Zukunft vielleicht lieber über ein Textdokument einlesen)
-void set(float** mat);
 void test();
 bool equal_size(const Matrix &mat);
 };
 
+
+Matrix operator*(double lambda, Matrix &mat);
+Matrix operator*(Matrix &mat, double lambda);
 
