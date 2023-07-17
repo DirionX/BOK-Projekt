@@ -1,7 +1,28 @@
 #include <iostream>
-#include "Matrix(2).h"
+#include "Matrix.h"
+
 
 int main(){
+    Matrix mat(3, 3);
+    Matrix test(3, 3);
+    mat[0][0] = 1;
+    mat[0][1] = 1;
+    mat[0][2] = 3;
+    mat[1][0] = 1;
+    mat[1][1] = 4;
+    mat[1][2] = 1;
+    mat[2][0] = 1;
+    mat[2][1] = 1;
+    mat[2][2] = 7;
+    test = mat.gauss();
+    test.show();
+    double a = mat.det();
+    double b = test.det();
+    std::cout << "Det(mat) = " << a << std::endl;
+    std::cout << "Det(test) = " << b << std::endl;
+
+
+    /*
     Matrix vec(3,1);
     vec[0][0] = 1;
     vec[1][0] = 2;
@@ -23,5 +44,8 @@ int main(){
     mat3x3.show();
     product = ( 4 * mat3x3);
     product.show();
+    */
 
 }
+
+

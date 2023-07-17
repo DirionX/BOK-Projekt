@@ -19,28 +19,35 @@ Matrix(int n);
 //Dekonstruktor
 ~Matrix();
 
-// Überladen von [] um auf Inhalt zugreifen zu können und zu überarbeiten
+// Überladen von Operatoren
 double*& operator[](int i);
 
+Matrix& operator=(const Matrix &mat);
 
-Matrix Gauss(Matrix &mat);
+Matrix operator+(Matrix &mat);
 
 Matrix operator*(Matrix &mat);
 
-
-Matrix transposition();
-Matrix operator+(Matrix &mat);
-Matrix& operator=(const Matrix &mat);
-
+//Methoden
+bool equal_size(const Matrix &mat);
 
 void show();
-// Matrix sezten (erst mal direkt in der Zukunft vielleicht lieber über ein Textdokument einlesen)
+
+Matrix transposition();
+
+Matrix gauss();
+
+double det();
+
+
 void test();
-bool equal_size(const Matrix &mat);
 bool zsf();
 };
 
+// Auserhalb der Matrix Klasse
 
 Matrix operator*(double lambda, Matrix &mat);
 Matrix operator*(Matrix &mat, double lambda);
+
+void zeilen_add(Matrix &mat, int i, int j, double lambda);
 

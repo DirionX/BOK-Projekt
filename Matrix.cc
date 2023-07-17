@@ -1,4 +1,4 @@
-#include "Matrix(2).h"
+#include "Matrix.h"
 #include <iostream>
 
 // Definitionen für die Matrix Klasse
@@ -16,9 +16,9 @@ Matrix::Matrix(int m, int n) : M(m), N(n){
     }
 }
 Matrix::Matrix(int n):  M(n), N(n){
-    matrix = new double*[n];
+    matrix = new double*[M];
     for (int i = 0; i < n; i++){
-        matrix[i] = new double[n];
+        matrix[i] = new double[N];
         for (int j = 0; j < n; j ++) {
             double eintrag = 0;
             if (i == j) {
@@ -37,6 +37,7 @@ Matrix::~Matrix() {
     delete[] matrix;
 }
 
+// Ueberladen von Konstruktoren
 
 double*& Matrix::operator[](int i) {
     /*Liefert eine Referenz auf den Pointer, sd mit mat[i] überschrieben werden kann */
@@ -48,34 +49,6 @@ double*& Matrix::operator[](int i) {
     }
 }
 
-Matrix Matrix::transposition() {
-    Matrix transp(this->N, this->M);
-    for (int i = 0; i < this->N; i++) {
-        for (int j = 0; j < this->M; j++) {
-            transp[i][j] = (*this)[j][i];
-        }
-    }
-    return transp;
-}
-
-void Matrix::show(){
-    //Mega ätzend zu printen...
-    for (int i = 0; i<M; i++){
-        std::cout << "[";
-        for (int j = 0; j<N; j++){
-            if (j == N - 1){
-                std::cout << matrix[i][j];
-            }else{
-                std::cout << matrix[i][j] << ",";
-            }
-        }
-        std::cout << "]" << std::endl;
-    }
-}
-void Matrix::test(){
-    std::cout << this->M << std::endl;
-
-}
 Matrix& Matrix::operator=(const Matrix &mat){
     if (!equal_size(mat)){
         std::cout << "Operation = not possible, sizes dont match" << std::endl;
@@ -116,7 +89,7 @@ Matrix Matrix::operator*(Matrix &mat){
     return product;
 }
 
-
+//Methoden
 
 bool Matrix::equal_size(const Matrix &mat){
     if (this->M != mat.M || this->N != mat.N){
@@ -126,25 +99,78 @@ bool Matrix::equal_size(const Matrix &mat){
     }
 }
 
-Matrix operator*(double lambda, Matrix &mat) {
-    Matrix product(mat.M, mat.N);
-    for (int i = 0; i < mat.M; i++) {
-        for (int j = 0; j < mat.N; j++) {
-            product[i][j] = mat[i][j] * lambda;
+void Matrix::show(){
+    //Mega ätzend zu printen...
+    for (int i = 0; i<M; i++){
+        std::cout << "[";
+        for (int j = 0; j<N; j++){
+            if (j == N - 1){
+                std::cout << matrix[i][j];
+            }else{
+                std::cout << matrix[i][j] << ",";
+            }
         }
+        std::cout << "]" << std::endl;
     }
-    return product;
 }
 
-Matrix operator*(Matrix &mat, double lambda) {
-    Matrix product(mat.M, mat.N);
-    for (int i = 0; i < mat.M; i++) {
-        for (int j = 0; j < mat.N; j++) {
-            product[i][j] = mat[i][j] * lambda;
+Matrix Matrix::transposition() {
+    Matrix transp(this->N, this->M);
+    for (int i = 0; i < this->N; i++) {
+        for (int j = 0; j < this->M; j++) {
+            transp[i][j] = (*this)[j][i];
         }
     }
-    return product;
+    return transp;
 }
+
+Matrix Matrix::gauss() {
+    Matrix gauss(this->M, this->N);
+    gauss = *this;
+    for (int i = 0; i < this->N - 1; i++) {
+        int not_zero = -1;
+        for (int j = i; j < this->M; j++) {
+            if (gauss[j][i] != 0) {
+                not_zero = j;
+                break;
+            }
+        }
+        if (not_zero == -1){
+            continue;
+        }
+        if (not_zero != i) {
+            zeilen_add(gauss, not_zero, i, 1);
+        }
+        for (int j = i + 1; j < this->M; j++) {
+            if (gauss[j][i] != 0){
+                double factor = -(gauss[j][i] / gauss[i][i]);
+                zeilen_add(gauss, i, j, factor);
+            }
+
+        }
+    }
+    return gauss;
+}
+
+double Matrix::det() {
+    if (this->M != this->N) {
+        return 0;
+    }
+    Matrix gauss(this->M, this->N);
+    gauss = this->gauss();
+    double det = 1;
+    for (int i = 0; i < this->M; i++) {
+        det *= gauss[i][i];
+    }
+    return det;
+}
+
+
+void Matrix::test(){
+    std::cout << this->M << std::endl;
+
+}
+
 
 bool Matrix::zsf(){
     int not_zero_i = -1;
@@ -168,3 +194,38 @@ bool Matrix::zsf(){
     }
     return true;
 }
+
+// Auserhalb der Matrix Klasse
+
+Matrix operator*(double lambda, Matrix &mat) {
+    Matrix product(mat.M, mat.N);
+    for (int i = 0; i < mat.M; i++) {
+        for (int j = 0; j < mat.N; j++) {
+            product[i][j] = mat[i][j] * lambda;
+        }
+    }
+    return product;
+}
+
+Matrix operator*(Matrix &mat, double lambda) {
+    Matrix product(mat.M, mat.N);
+    for (int i = 0; i < mat.M; i++) {
+        for (int j = 0; j < mat.N; j++) {
+            product[i][j] = mat[i][j] * lambda;
+        }
+    }
+    return product;
+}
+
+void zeilen_add(Matrix &mat, int a, int b, double lambda) {
+    if (a < 0 || b < 0) {
+        return;
+    }
+    if ( a >= mat.M || b >= mat.M) {
+        return;
+    }
+    for (int i = 0; i < mat.N; i++) {
+        mat[b][i] = mat[b][i] + lambda * mat[a][i];
+    }
+}
+
