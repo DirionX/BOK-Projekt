@@ -29,6 +29,10 @@ Matrix::Matrix(int n):  M(n), N(n){
     }
 }
 
+Matrix::Matrix(): M(0), N(0) {
+    matrix = nullptr;
+}
+
 
 Matrix::~Matrix() {
     for (int i = 0; i < N; i ++) {
@@ -61,7 +65,7 @@ Matrix& Matrix::operator=(const Matrix &mat){
 Matrix Matrix::operator+(Matrix &mat) {
     if (!equal_size(mat)) {
         std::cout << "Operation + not possible, sizes dont match" << std::endl;
-        abort();
+        return Matrix();
     }
     else {
         Matrix sum(this->M, this->N);
@@ -75,6 +79,10 @@ Matrix Matrix::operator+(Matrix &mat) {
 }
 
 Matrix Matrix::operator*(Matrix &mat){
+    if (this->N != mat.M) {
+        std::cout << "Operation * not possible, sizes dont match" << std::endl;
+        return Matrix();
+    }
     Matrix product(this->M, mat.N);
     for (int i = 0; i < this->M; i++){
         for (int j = 0; j < mat.N; j++){
@@ -152,9 +160,66 @@ Matrix Matrix::gauss() {
     return gauss;
 }
 
+void Matrix::gauss_on_En(Matrix &mat) {
+    Matrix gauss(this->M, this->N);
+    gauss = *this;
+    for (int i = 0; i < this->N - 1; i++) {
+        int not_zero = -1;
+        for (int j = i; j < this->M; j++) {
+            if (gauss[j][i] != 0) {
+                not_zero = j;
+                break;
+            }
+        }
+        if (not_zero == -1){
+            continue;
+        }
+        if (not_zero != i) {
+            zeilen_add(gauss, not_zero, i, 1);
+            zeilen_add(mat, not_zero, i, 1);
+        }
+        for (int j = i + 1; j < this->M; j++) {
+            if (gauss[j][i] != 0){
+                double factor = -(gauss[j][i] / gauss[i][i]);
+                zeilen_add(gauss, i, j, factor);
+                zeilen_add(mat, i, j, factor);
+            }
+
+        }
+    }
+}
+
+Matrix Matrix::inv() {
+    if (this->M != this->N) {
+        return Matrix();
+    }
+    if (this->det() <= 0) {
+        std::cout << "Die Matrix ist nicht invertierbar" << std::endl;
+        return Matrix();
+    }
+    else {
+        Matrix inv(this->M, this->N);
+        for (int i = 0; i < this->M; i++) {
+            inv[i][i] = 1;
+        }
+        this->gauss_on_En(inv);
+        inv = inv.transposition();
+        Matrix transp(this->N, this->M);
+        transp = this->transposition();
+        transp.gauss_on_En(inv);
+        for (int i = 0; i < this->M; i++) {
+            double factor = 1 / transp[i][i];
+            for (int j = 0; j < this->N; j++) {
+                inv[i][j] *= factor;
+            }
+        }
+        return inv;
+    }
+}
+
 double Matrix::det() {
     if (this->M != this->N) {
-        return 0;
+        return -1;
     }
     Matrix gauss(this->M, this->N);
     gauss = this->gauss();
@@ -195,6 +260,7 @@ bool Matrix::zsf(){
     return true;
 }
 
+
 // Auserhalb der Matrix Klasse
 
 Matrix operator*(double lambda, Matrix &mat) {
@@ -226,6 +292,15 @@ void zeilen_add(Matrix &mat, int a, int b, double lambda) {
     }
     for (int i = 0; i < mat.N; i++) {
         mat[b][i] = mat[b][i] + lambda * mat[a][i];
+    }
+}
+
+void zeilen_skalar_mult(Matrix &mat, int a, double lambda) {
+    if (a < 0 || a >= mat.M) {
+        return;
+    }
+    for (int i = 0; i < mat.N; i++) {
+        mat[a][i] = lambda * mat[a][i];
     }
 }
 

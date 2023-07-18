@@ -4,17 +4,18 @@
 
 int main(){
     Matrix mat(3, 3);
-    Matrix test(3, 3);
-    mat[0][0] = 1;
-    mat[0][1] = 1;
-    mat[0][2] = 3;
-    mat[1][0] = 1;
-    mat[1][1] = 4;
-    mat[1][2] = 1;
-    mat[2][0] = 1;
-    mat[2][1] = 1;
-    mat[2][2] = 7;
-    test = mat.gauss();
+    mat[0][0] = 5;
+    mat[0][1] = 0;
+    mat[0][2] = 0;
+    mat[1][0] = 0;
+    mat[1][1] = 5;
+    mat[1][2] = 0;
+    mat[2][0] = 0;
+    mat[2][1] = 0;
+    mat[2][2] = 5;
+    mat.show();
+
+    Matrix test = mat.inv();
     test.show();
     double a = mat.det();
     double b = test.det();

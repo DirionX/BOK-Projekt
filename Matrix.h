@@ -16,6 +16,8 @@ const int N;
 Matrix(int m, int n);
 // Quadratischer Matrix Konstruktor
 Matrix(int n);
+// NUll-Matrix
+Matrix();
 //Dekonstruktor
 ~Matrix();
 
@@ -37,6 +39,10 @@ Matrix transposition();
 
 Matrix gauss();
 
+void gauss_on_En(Matrix &mat);
+
+Matrix inv();
+
 double det();
 
 
@@ -44,10 +50,13 @@ void test();
 bool zsf();
 };
 
+
 // Auserhalb der Matrix Klasse
 
 Matrix operator*(double lambda, Matrix &mat);
 Matrix operator*(Matrix &mat, double lambda);
 
 void zeilen_add(Matrix &mat, int i, int j, double lambda);
+
+void zeilen_skalar_mult(Matrix &mat, int a, double lambda);
 
