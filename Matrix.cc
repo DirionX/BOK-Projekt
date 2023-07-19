@@ -268,23 +268,17 @@ bool Matrix::zsf(){
 // Auserhalb der Matrix Klasse
 
 Matrix operator*(double lambda, Matrix &mat) {
-    Matrix product(mat.M, mat.N);
+    Matrix* produkt = new Matrix(mat.N, mat.M);
     for (int i = 0; i < mat.M; i++) {
         for (int j = 0; j < mat.N; j++) {
-            product[i][j] = mat[i][j] * lambda;
+            (*produkt)[i][j] = mat[i][j] * lambda;
         }
     }
-    return product;
+    return *produkt;
 }
 
 Matrix operator*(Matrix &mat, double lambda) {
-    Matrix product(mat.M, mat.N);
-    for (int i = 0; i < mat.M; i++) {
-        for (int j = 0; j < mat.N; j++) {
-            product[i][j] = mat[i][j] * lambda;
-        }
-    }
-    return product;
+    return lambda * mat;
 }
 
 void zeilen_add(Matrix &mat, int a, int b, double lambda) {
