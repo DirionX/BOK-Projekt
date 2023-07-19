@@ -53,28 +53,33 @@ double*& Matrix::operator[](int i) {
     }
 }
 
-Matrix& Matrix::operator=(const Matrix &mat){
+Matrix & Matrix::operator=(const Matrix &mat){
     if (!equal_size(mat)){
         std::cout << "Operation = not possible, sizes dont match" << std::endl;
         abort();
     }
-    this->matrix = mat.matrix;
+    for (int i = 0; i < this->N; i++){
+        for(int j = 0; j < this->M; j++){
+            this->matrix[j][i] = mat.matrix[j][i]; 
+        }
+    }
     return *this;
 }
 
-Matrix Matrix::operator+(Matrix &mat) {
+Matrix Matrix::operator+( Matrix& mat){
     if (!equal_size(mat)) {
         std::cout << "Operation + not possible, sizes dont match" << std::endl;
-        return Matrix();
+        return mat;
     }
     else {
-        Matrix sum(this->M, this->N);
+        // Wir brauchen kein delete? (scheint auch so zu funktionieren)
+        Matrix* sum = new Matrix(this->M, this->N);
         for (int i = 0; i < this->M; i++) {
             for (int j = 0; j < this->N; j++) {
-                sum[i][j] = (*this)[i][j] + mat[i][j];
+                (*sum)[i][j] = (*this)[i][j] + mat.matrix[i][j];
             }
         }
-        return sum;
+        return *sum;
     }
 }
 
@@ -83,18 +88,17 @@ Matrix Matrix::operator*(Matrix &mat){
         std::cout << "Operation * not possible, sizes dont match" << std::endl;
         return Matrix();
     }
-    Matrix product(this->M, mat.N);
+    Matrix* produkt = new Matrix(this->M, this->N);
     for (int i = 0; i < this->M; i++){
         for (int j = 0; j < mat.N; j++){
             double eintrag = 0;
             for (int k = 0; k < this->N; k++) {
-                eintrag += this->matrix[i][k] * mat.matrix[k][j];
+                eintrag += this->matrix[i][k] * mat[k][j];
             }
-            product[i][j] = eintrag;
+            (*produkt)[i][j] = eintrag;
         }
     }
-    product.show();
-    return product;
+    return *produkt;
 }
 
 //Methoden
