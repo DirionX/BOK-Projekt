@@ -35,7 +35,7 @@ Matrix::Matrix(): M(0), N(0) {
 
 
 Matrix::~Matrix() {
-    for (int i = 0; i < N; i ++) {
+    for (int i = 0; i < M; i ++) {
         delete[] matrix[i];
     }
     delete[] matrix;
