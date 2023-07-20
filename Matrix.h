@@ -54,9 +54,20 @@ bool zsf();
 // Auserhalb der Matrix Klasse
 
 Matrix operator*(double lambda, Matrix &mat);
+
 Matrix operator*(Matrix &mat, double lambda);
 
 void zeilen_add(Matrix &mat, int i, int j, double lambda);
 
 void zeilen_skalar_mult(Matrix &mat, int a, double lambda);
+
+// INPUT/OUTPUT SHIT
+
+void matrixToFile(std::string f, Matrix mat);
+
+Matrix readFile(std::string f);
+
+bool nDoublesInString(std::string str, int n);
+
+bool checkFormat(std::string file);
 
