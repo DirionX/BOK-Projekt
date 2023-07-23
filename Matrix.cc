@@ -60,7 +60,7 @@ Matrix & Matrix::operator=(const Matrix &mat){
     }
     for (int i = 0; i < this->N; i++){
         for(int j = 0; j < this->M; j++){
-            this->matrix[j][i] = mat.matrix[j][i]; 
+            this->matrix[j][i] = mat.matrix[j][i];
         }
     }
     return *this;
@@ -88,7 +88,7 @@ Matrix Matrix::operator*(Matrix &mat){
         std::cout << "Operation * not possible, sizes dont match" << std::endl;
         return Matrix();
     }
-    Matrix* produkt = new Matrix(this->M, this->N);
+    Matrix* produkt = new Matrix(this->M, mat.N);
     for (int i = 0; i < this->M; i++){
         for (int j = 0; j < mat.N; j++){
             double eintrag = 0;
@@ -139,65 +139,78 @@ Matrix Matrix::transposition() {
 Matrix Matrix::gauss() {
     Matrix gauss(this->M, this->N);
     gauss = *this;
-    for (int i = 0; i < this->N - 1; i++) {
-        int not_zero = -1;
-        for (int j = i; j < this->M; j++) {
+
+    int active_not_zero = -1;
+    int zeile = 0;
+
+    for (int i = 0; i < this->N; i++) {
+        active_not_zero = -1;
+        for (int j = zeile; j < this->M; j++) {
             if (gauss[j][i] != 0) {
-                not_zero = j;
+                active_not_zero = j;
                 break;
             }
         }
-        if (not_zero == -1){
+        if (active_not_zero == -1) {
             continue;
         }
-        if (not_zero != i) {
-            zeilen_add(gauss, not_zero, i, 1);
+        if (active_not_zero != i) {
+            zeilen_add(gauss, active_not_zero, zeile, 1);
         }
-        for (int j = i + 1; j < this->M; j++) {
+        for (int j = zeile + 1; j < this->M; j++) {
             if (gauss[j][i] != 0){
-                double factor = -(gauss[j][i] / gauss[i][i]);
-                zeilen_add(gauss, i, j, factor);
+                double factor = -(gauss[j][i] / gauss[zeile][i]);
+                zeilen_add(gauss, zeile, j, factor);
             }
 
         }
+        zeile++;
     }
+
     return gauss;
 }
 
-void Matrix::gauss_on_En(Matrix &mat) {
+Matrix Matrix::gauss_on_En(Matrix & mat) {
     Matrix gauss(this->M, this->N);
     gauss = *this;
-    for (int i = 0; i < this->N - 1; i++) {
-        int not_zero = -1;
-        for (int j = i; j < this->M; j++) {
+
+    int active_not_zero = -1;
+    int zeile = 0;
+
+    for (int i = 0; i < this->N; i++) {
+        active_not_zero = -1;
+        for (int j = zeile; j < this->M; j++) {
             if (gauss[j][i] != 0) {
-                not_zero = j;
+                active_not_zero = j;
                 break;
             }
         }
-        if (not_zero == -1){
+        if (active_not_zero == -1) {
             continue;
         }
-        if (not_zero != i) {
-            zeilen_add(gauss, not_zero, i, 1);
-            zeilen_add(mat, not_zero, i, 1);
+        if (active_not_zero != i) {
+            zeilen_add(gauss, active_not_zero, zeile, 1);
+            zeilen_add(mat, active_not_zero, zeile, 1);
         }
-        for (int j = i + 1; j < this->M; j++) {
+        for (int j = zeile + 1; j < this->M; j++) {
             if (gauss[j][i] != 0){
-                double factor = -(gauss[j][i] / gauss[i][i]);
-                zeilen_add(gauss, i, j, factor);
-                zeilen_add(mat, i, j, factor);
+                double factor = -(gauss[j][i] / gauss[zeile][i]);
+                zeilen_add(gauss, zeile, j, factor);
+                zeilen_add(mat, zeile, j, factor);
             }
 
         }
+        zeile++;
     }
+
+    return gauss;
 }
 
 Matrix Matrix::inv() {
     if (this->M != this->N) {
         return Matrix();
     }
-    if (this->det() <= 0) {
+    if (this->det() == 0) {
         std::cout << "Die Matrix ist nicht invertierbar" << std::endl;
         return Matrix();
     }
@@ -206,10 +219,10 @@ Matrix Matrix::inv() {
         for (int i = 0; i < this->M; i++) {
             inv[i][i] = 1;
         }
-        this->gauss_on_En(inv);
-        inv = inv.transposition();
         Matrix transp(this->N, this->M);
-        transp = this->transposition();
+        transp = this->gauss_on_En(inv);
+        inv = inv.punkt_spiegel();
+        transp = transp.punkt_spiegel();
         transp.gauss_on_En(inv);
         for (int i = 0; i < this->M; i++) {
             double factor = 1 / transp[i][i];
@@ -217,13 +230,13 @@ Matrix Matrix::inv() {
                 inv[i][j] *= factor;
             }
         }
-        return inv;
+        return inv.punkt_spiegel();
     }
 }
 
 double Matrix::det() {
     if (this->M != this->N) {
-        return -1;
+        return 0;
     }
     Matrix gauss(this->M, this->N);
     gauss = this->gauss();
@@ -232,6 +245,19 @@ double Matrix::det() {
         det *= gauss[i][i];
     }
     return det;
+}
+
+Matrix Matrix::punkt_spiegel() {
+    if (M != N){
+        return Matrix();
+    }
+    Matrix spiegel(M, N);
+    for (int i = 0; i < M; i++){
+        for (int j = 0; j < N; j++) {
+            spiegel[M - 1- i][N - 1 - j] = matrix[i][j];
+        }
+    }
+    return spiegel;
 }
 
 
