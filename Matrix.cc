@@ -1,6 +1,7 @@
 #include "Matrix.h"
 #include <iostream>
 
+
 // Definitionen für die Matrix Klasse
 
 // Construktor Definition, ist etwas fancy und verwirrend aber funktioniert hoffentlich.

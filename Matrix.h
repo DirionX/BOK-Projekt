@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <memory> //für unique pointer
 
 // Hier kommen nur Deklarationen hin.
 
@@ -48,6 +50,7 @@ double det();
 Matrix punkt_spiegel();
 
 void test();
+
 bool zsf();
 };
 
@@ -55,9 +58,23 @@ bool zsf();
 // Auserhalb der Matrix Klasse
 
 Matrix operator*(double lambda, Matrix &mat);
+
 Matrix operator*(Matrix &mat, double lambda);
 
 void zeilen_add(Matrix &mat, int i, int j, double lambda);
 
 void zeilen_skalar_mult(Matrix &mat, int a, double lambda);
 
+// INPUT/OUTPUT SHIT
+
+void matrixToFile(std::string f, Matrix mat);
+
+std::unique_ptr<Matrix> readFile(std::string f, int line_i);
+
+bool nDoublesInString(std::string str, int n);
+
+bool checkFormat(std::string file, int line_i);
+
+bool twoPositiveIntCheck(std::string str);
+
+void calculate(std::string output, std::string input);

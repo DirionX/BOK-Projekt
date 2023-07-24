@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream> // für Textfiles
 #include <sstream> // für string-kontrolle
+#include <vector> // um die Input Matrizen zu speichern
+#include <memory> // für smartpointer in readFile funktion
 
 // Printed eine Matrix in ein File
 
@@ -26,42 +28,48 @@ void matrixToFile(std::string f, Matrix mat){
     outputf.close();
 }
 
-/* Liest eine Matrix aus dem File aus. Format muss so aussehen:
+/* Liest eine Matrix aus dem File an der Zeile line_i aus. Format muss so aussehen:
     m n
     a a a
     a a a
     a a a
     wobei n,m die dim der matrix, und a zahlen.
+    (hat ohne unique Pointer nicht funktioniert...)
 */
-Matrix readFile(std::string f){
+
+std::unique_ptr<Matrix> readFile(std::string f, int line_i){
     std::ifstream inputf;
     inputf.open(f);
     double inputS; 
     if(inputf.is_open()){
-        if(!checkFormat(f)){
-            return Matrix();
+        if(!checkFormat(f, line_i)){
+            return std::unique_ptr<Matrix>(new Matrix());
+            
+        }
+        std::string ignore;
+        for (int i = 0; i < line_i - 1; i++){
+            std::getline(inputf, ignore);
         }
         inputf >> inputS;
         const int M = inputS;
         inputf >> inputS;
         const int N = inputS;
-        Matrix* mat = new Matrix(M, N);
+        std::unique_ptr<Matrix> mat(new Matrix(M, N));
         int i = 0;
         int j = 0;
-        while (inputf){
-            if (j == (M)){
+        while (inputf >> inputS){
+            if (j == N){
                 i++;
                 j = 0;
             }
             if(i == M){
                 break;
             }
-            inputf >> inputS;
             (*mat)[i][j] = inputS;
             j++;
         }
         inputf.close();
-        return *mat;
+        return mat;
     }else{
         std::cout << "Can't open file..." << std::endl;
         abort();
@@ -87,27 +95,30 @@ bool nDoublesInString(std::string str, int n){
     }
 }
 
-//Checkt ob das Martrix format im Text file stimmt, um von readFile eingelesen werden zu können
+//Checkt ob das Martrix format im Text file ab der Zeile "line_i" stimmt, um von readFile eingelesen werden zu können
 
-bool checkFormat(std::string file){
-    std::ifstream inputNum;
+bool checkFormat(std::string file, int line_i){
     std::ifstream inputStr;
-    inputNum.open(file);
     inputStr.open(file);
-    if (!inputNum.is_open() || !inputStr.is_open()){
+    if (!inputStr.is_open()){
         abort();
+    }
+    std::string ignore;
+    for (int i = 0; i < line_i - 1; i++){
+        std::getline(inputStr, ignore);
     }
     int m;
     int n;
     std::string line;
-    inputNum >> m;
-    inputNum >> n;
     std::getline(inputStr, line);
-    if ((m <= 0) || (n <= 0) || (line.length() != (1 + std::to_string(n).length() + std::to_string(m).length()))){
+    if(!twoPositiveIntCheck(line)){
         return false;
     }
+    std::istringstream lineS(line);
+    lineS >> m;
+    lineS >> n;
     int i = 0;
-    while(!inputStr.eof() || line == ""){
+    while(!inputStr.eof() && i < m){
         i++;
         std::getline(inputStr, line);
         if (!(nDoublesInString(line, n))){
@@ -118,6 +129,110 @@ bool checkFormat(std::string file){
         return false;
     }
     return true;
-    inputNum.close();
     inputStr.close();
 }
+
+// überprüft Format von erster Zeile der Matrix also von der dim. Eingabe
+
+bool twoPositiveIntCheck(std::string str){
+    std::istringstream iss(str);
+    int num;
+    int i = 0;
+    while(iss >> num){
+        i++;
+        if (num <= 0){
+            return false;
+        }
+        if(i == 2){
+            char rest;
+            if (iss >> rest){
+                return false;
+            }else{
+                return true;
+            }
+        }
+    }
+}
+
+// Funktion wo alles passiert
+
+void calculate(std::string output, std::string input){
+    // hat ohne unique pointer nicht funktioniert
+    std::vector<std::unique_ptr<Matrix>> matrizen;
+    std::vector<std::string> operations;
+    int line_i = 1;
+    std::ifstream inputf;
+    inputf.open(input);
+    std::string line;
+    if (!inputf.is_open()){
+        std::cout << "File didn't open" << std::endl;
+        abort();
+    }
+    while (!inputf.eof()){
+        std::getline(inputf, line);
+        if(checkFormat(input, line_i)){
+            matrizen.push_back(std::unique_ptr<Matrix>(readFile(input, line_i)));
+        }else if(line == "+"){
+            operations.push_back(line);
+        }else if(line == "*"){
+            operations.push_back(line);
+        }else if(line == "gauss"){
+            operations.push_back(line);
+        }else if(line == "transp"){
+            operations.push_back(line);
+        }else if(line == "inv"){
+            operations.push_back(line);
+        }else if(line == "det"){
+            operations.push_back(line);
+        }
+        line_i++;
+    }
+    for (int i = 0; i < operations.size(); i++){
+        if (operations[i] == "+"){
+            int m = matrizen[i]->M;
+            int n = matrizen[i]->N;
+            Matrix mat(m, n);
+            mat = (*matrizen[i]) + (*matrizen[i+1]);
+            mat.show();
+            matrixToFile(output, mat);
+        }   if (operations[i] == "*"){
+            int m = matrizen[i + 1]->N;
+            int n = matrizen[i]->M;
+            Matrix mat(m, n);
+            mat = (*matrizen[i]) * (*matrizen[i+1]);
+            mat.show();
+            matrixToFile(output, mat);
+        } if (operations[i] == "gauss"){
+            int m = matrizen[i]->M;
+            int n = matrizen[i]->N;
+            Matrix mat(m, n);
+            mat = matrizen[i]->gauss();
+            mat.show();
+            //matrixToFile(output, mat);
+        } if(operations[i] == "transp"){
+            int m = matrizen[i]->M;
+            int n = matrizen[i]->N;
+            Matrix mat(m, n);
+            mat = matrizen[i]->transposition();
+            mat.show();
+            //atrixToFile(output, mat);
+        } if(operations[i] == "inv"){
+            int m = matrizen[i]->M;
+            int n = matrizen[i]->N;
+            Matrix mat(m, n);
+            mat = matrizen[i]->inv();
+            mat.show();
+            //matrixToFile(output, mat);
+        } if(operations[i] == "det"){
+            double dete;
+            dete = matrizen[i]->det();
+            std::cout << dete << std::endl;
+            std::ofstream outputf;
+            outputf.open(output);
+            outputf << dete;
+            outputf.close();
+        }
+    }
+    inputf.close();
+}
+
