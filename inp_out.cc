@@ -12,6 +12,7 @@ void matrixToFile(std::string f, Matrix mat){
     std::ofstream outputf;
     outputf.open(f);
     if(outputf.is_open()){
+        outputf << mat.M << " " << mat.N << std::endl;
         for (int i = 0; i<mat.M; i++){
             for (int j = 0; j<mat.N; j++){
                 if (j == mat.N - 1){
