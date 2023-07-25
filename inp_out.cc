@@ -6,7 +6,7 @@
 #include <vector> // um die Input Matrizen zu speichern
 #include <memory> // für smartpointer in readFile funktion
 
-// Printed eine Matrix in ein File
+// Printed eine Matrix in ein File (mit n,m Dimesionen in erster Zeile)
 
 void matrixToFile(std::string f, Matrix mat){
     std::ofstream outputf;
@@ -45,12 +45,13 @@ std::unique_ptr<Matrix> readFile(std::string f, int line_i){
     if(inputf.is_open()){
         if(!checkFormat(f, line_i)){
             return std::unique_ptr<Matrix>(new Matrix());
-
         }
         std::string ignore;
+        // Das File wird erst ab der ersten "line_i-ten" gelesen, der rest ignoriert
         for (int i = 0; i < line_i - 1; i++){
             std::getline(inputf, ignore);
         }
+        // Dimensionen werden eingelesen
         inputf >> inputS;
         const int M = inputS;
         inputf >> inputS;
@@ -58,6 +59,7 @@ std::unique_ptr<Matrix> readFile(std::string f, int line_i){
         std::unique_ptr<Matrix> mat(new Matrix(M, N));
         int i = 0;
         int j = 0;
+        // Matrix wird eingelesen
         while (inputf >> inputS){
             if (j == N){
                 i++;
@@ -77,7 +79,7 @@ std::unique_ptr<Matrix> readFile(std::string f, int line_i){
     }
 }
 
-// nimmt ein string und checkt ob n-viele doubles mit leerzeichen dazwischen enthalten sind.
+// nimmt ein string und checkt ob n-viele Doubles mit Leerzeichen dazwischen enthalten sind.
 
 bool nDoublesInString(std::string str, int n){
     std::istringstream iss(str);
@@ -133,7 +135,7 @@ bool checkFormat(std::string file, int line_i){
     inputStr.close();
 }
 
-// überprüft Format von erster Zeile der Matrix also von der dim. Eingabe
+// überprüft Format von erster Zeile der Matrix, also von der dim. Eingabe.
 
 bool twoPositiveIntCheck(std::string str){
     std::istringstream iss(str);
@@ -169,6 +171,7 @@ void calculate(std::string output, std::string input){
         std::cout << "File didn't open" << std::endl;
         abort();
     }
+    // Text File wird einglesen und Matrizen/Operationen in Vector gespeichert
     while (!inputf.eof()){
         std::getline(inputf, line);
         if(checkFormat(input, line_i)){
@@ -188,21 +191,46 @@ void calculate(std::string output, std::string input){
         }
         line_i++;
     }
+    // Operationen werden auf die gespeicherten Matritzen ausgeführt
     for (int i = 0; i < operations.size(); i++){
         if (operations[i] == "+"){
             int m = matrizen[i]->M;
             int n = matrizen[i]->N;
             Matrix mat(m, n);
-            mat = (*matrizen[i]) + (*matrizen[i+1]);
-            mat.show();
-            matrixToFile(output, mat);
-        }   if (operations[i] == "*"){
-            int n = matrizen[i + 1]->N;
-            int m = matrizen[i]->M;
-            Matrix mat(m, n);
-            mat = (*matrizen[i]) * (*matrizen[i+1]);
-            mat.show();
-            matrixToFile(output, mat);
+            if (i == 0){
+                mat = (*matrizen[i]) + (*matrizen[i+1]);
+                matrixToFile(output, mat);
+                // .show falls letzte Operation
+                if (operations.size() == 1){
+                    mat.show();
+                }
+            }else{
+                mat = (*readFile(output, 1)) + (*matrizen[i+1]);
+                matrixToFile(output, mat);
+                if (operations.size() == (i + 1)){
+                    mat.show();
+                }
+            }
+        } if (operations[i] == "*"){
+            if (i == 0){
+                int n = matrizen[i + 1]->N;
+                int m = matrizen[i]->M;
+                Matrix mat(m, n);
+                mat = (*matrizen[i]) * (*matrizen[i+1]);
+                matrixToFile(output, mat);
+                if (operations.size() == (i + 1)){
+                    mat.show();
+                }
+            }else{
+                int n = matrizen[i + 1]->N;
+                int m = readFile(output, 1)->M;
+                Matrix mat(m, n);
+                mat = (*readFile(output, 1)) * (*matrizen[i+1]);
+                matrixToFile(output, mat);
+                if (operations.size() == (i + 1)){
+                    mat.show();
+                }
+            }
         } if (operations[i] == "gauss"){
             int m = matrizen[i]->M;
             int n = matrizen[i]->N;

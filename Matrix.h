@@ -63,7 +63,7 @@ void zeilen_add(Matrix &mat, int i, int j, double lambda);
 
 void zeilen_skalar_mult(Matrix &mat, int a, double lambda);
 
-// INPUT/OUTPUT SHIT
+// INPUT/OUTPUT Funktionen
 
 void matrixToFile(std::string f, Matrix mat);
 

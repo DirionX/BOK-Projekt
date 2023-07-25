@@ -331,7 +331,7 @@ bool Matrix::zsf(){
 
 // Auserhalb der Matrix Klasse
 
-// Skalarmultiplikationn
+// Skalarmultiplikation
 
 Matrix operator*(double lambda, Matrix &mat) {
     Matrix* produkt = new Matrix(mat.N, mat.M);
