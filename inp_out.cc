@@ -41,11 +41,11 @@ void matrixToFile(std::string f, Matrix mat){
 std::unique_ptr<Matrix> readFile(std::string f, int line_i){
     std::ifstream inputf;
     inputf.open(f);
-    double inputS; 
+    double inputS;
     if(inputf.is_open()){
         if(!checkFormat(f, line_i)){
             return std::unique_ptr<Matrix>(new Matrix());
-            
+
         }
         std::string ignore;
         for (int i = 0; i < line_i - 1; i++){
@@ -209,21 +209,21 @@ void calculate(std::string output, std::string input){
             Matrix mat(m, n);
             mat = matrizen[i]->gauss();
             mat.show();
-            //matrixToFile(output, mat);
+            matrixToFile(output, mat);
         } if(operations[i] == "transp"){
             int m = matrizen[i]->M;
             int n = matrizen[i]->N;
             Matrix mat(m, n);
             mat = matrizen[i]->transposition();
             mat.show();
-            //atrixToFile(output, mat);
+            matrixToFile(output, mat);
         } if(operations[i] == "inv"){
             int m = matrizen[i]->M;
             int n = matrizen[i]->N;
             Matrix mat(m, n);
             mat = matrizen[i]->inv();
             mat.show();
-            //matrixToFile(output, mat);
+            matrixToFile(output, mat);
         } if(operations[i] == "det"){
             double dete;
             dete = matrizen[i]->det();

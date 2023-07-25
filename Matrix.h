@@ -41,15 +41,13 @@ Matrix transposition();
 
 Matrix gauss();
 
-Matrix gauss_on_En(Matrix & mat);
+Matrix gauss(Matrix & mat);
 
 Matrix inv();
 
 double det();
 
 Matrix punkt_spiegel();
-
-void test();
 
 bool zsf();
 };
@@ -78,3 +76,5 @@ bool checkFormat(std::string file, int line_i);
 bool twoPositiveIntCheck(std::string str);
 
 void calculate(std::string output, std::string input);
+
+double runden(double d, int digits);

@@ -1,5 +1,6 @@
 #include "Matrix.h"
 #include <iostream>
+#include <math.h>
 
 
 // Definitionen für die Matrix Klasse
@@ -16,6 +17,9 @@ Matrix::Matrix(int m, int n) : M(m), N(n){
         }
     }
 }
+
+// Konstruktor für quadratische Matrizen
+
 Matrix::Matrix(int n):  M(n), N(n){
     matrix = new double*[M];
     for (int i = 0; i < n; i++){
@@ -30,10 +34,13 @@ Matrix::Matrix(int n):  M(n), N(n){
     }
 }
 
+// Nullmatrix
+
 Matrix::Matrix(): M(0), N(0) {
     matrix = nullptr;
 }
 
+//Dekonstruktor
 
 Matrix::~Matrix() {
     for (int i = 0; i < M; i ++) {
@@ -42,7 +49,9 @@ Matrix::~Matrix() {
     delete[] matrix;
 }
 
-// Ueberladen von Konstruktoren
+//Überladen von Operatoren
+
+//Operator [] um auf Zeile der Matrix zuzugreifen
 
 double*& Matrix::operator[](int i) {
     /*Liefert eine Referenz auf den Pointer, sd mit mat[i] überschrieben werden kann */
@@ -53,6 +62,8 @@ double*& Matrix::operator[](int i) {
         std::cout << "Error Index out of bounds";
     }
 }
+
+// Operator =, um Matrizen kopieren zu können
 
 Matrix & Matrix::operator=(const Matrix &mat){
     if (!equal_size(mat)){
@@ -67,7 +78,10 @@ Matrix & Matrix::operator=(const Matrix &mat){
     return *this;
 }
 
+// Matrizenaddition, implementiert durch den + Operator
+
 Matrix Matrix::operator+( Matrix& mat){
+    // Überprüfen ob die Größen passen
     if (!equal_size(mat)) {
         std::cout << "Operation + not possible, sizes dont match" << std::endl;
         return mat;
@@ -85,11 +99,13 @@ Matrix Matrix::operator+( Matrix& mat){
 }
 
 Matrix Matrix::operator*(Matrix &mat){
+    // Überprüfen ob die Größen passen
     if (this->N != mat.M) {
         std::cout << "Operation * not possible, sizes dont match" << std::endl;
         return Matrix();
     }
     Matrix* produkt = new Matrix(this->M, mat.N);
+    // Zeile mal Spalte
     for (int i = 0; i < this->M; i++){
         for (int j = 0; j < mat.N; j++){
             double eintrag = 0;
@@ -104,6 +120,8 @@ Matrix Matrix::operator*(Matrix &mat){
 
 //Methoden
 
+//  Überprüfen ob Größen übereinstimmen
+
 bool Matrix::equal_size(const Matrix &mat){
     if (this->M != mat.M || this->N != mat.N){
         return false;
@@ -111,6 +129,8 @@ bool Matrix::equal_size(const Matrix &mat){
         return true;
     }
 }
+
+// Ausgabe ins Terminal
 
 void Matrix::show(){
     //Mega ätzend zu printen...
@@ -127,6 +147,8 @@ void Matrix::show(){
     }
 }
 
+// Matrix transposition
+
 Matrix Matrix::transposition() {
     Matrix transp(this->N, this->M);
     for (int i = 0; i < this->N; i++) {
@@ -136,6 +158,8 @@ Matrix Matrix::transposition() {
     }
     return transp;
 }
+
+// Gauss-Algorithmus für eine Matrix beliebiger Größe
 
 Matrix Matrix::gauss() {
     Matrix gauss(this->M, this->N);
@@ -167,11 +191,16 @@ Matrix Matrix::gauss() {
         }
         zeile++;
     }
+    for (int i = 0; i < M; i++){
+        for (int j = 0; j < N; j++) {
+            gauss[i][j] = runden(gauss[i][j], 5);
+        }
+    }
 
     return gauss;
 }
 
-Matrix Matrix::gauss_on_En(Matrix & mat) {
+Matrix Matrix::gauss(Matrix & mat) {
     Matrix gauss(this->M, this->N);
     gauss = *this;
 
@@ -203,9 +232,16 @@ Matrix Matrix::gauss_on_En(Matrix & mat) {
         }
         zeile++;
     }
+    for (int i = 0; i < M; i++){
+        for (int j = 0; j < N; j++) {
+            gauss[i][j] = runden(gauss[i][j], 5);
+        }
+    }
 
     return gauss;
 }
+
+// Bestimmung der Inversen Matrix für quadratische Matrizen mit Determintante ungleich 0
 
 Matrix Matrix::inv() {
     if (this->M != this->N) {
@@ -220,20 +256,23 @@ Matrix Matrix::inv() {
         for (int i = 0; i < this->M; i++) {
             inv[i][i] = 1;
         }
-        Matrix transp(this->N, this->M);
-        transp = this->gauss_on_En(inv);
+        Matrix mat(this->N, this->M);
+        mat = this->gauss(inv);
         inv = inv.punkt_spiegel();
-        transp = transp.punkt_spiegel();
-        transp.gauss_on_En(inv);
+        mat = mat.punkt_spiegel();
+        mat.gauss(inv);
         for (int i = 0; i < this->M; i++) {
-            double factor = 1 / transp[i][i];
+            double factor = 1 / mat[i][i];
             for (int j = 0; j < this->N; j++) {
                 inv[i][j] *= factor;
+                inv[i][j] = runden(inv[i][j], 5);
             }
         }
         return inv.punkt_spiegel();
     }
 }
+
+//Bestimmung der Determinanten über den Gauss-Algorithmus
 
 double Matrix::det() {
     if (this->M != this->N) {
@@ -248,6 +287,9 @@ double Matrix::det() {
     return det;
 }
 
+//Hilfsfunktion, um beim invertieren von einer oberen Dreiecksgestallt
+// in Diagonalgestallt zu kommmen
+
 Matrix Matrix::punkt_spiegel() {
     if (M != N){
         return Matrix();
@@ -261,12 +303,7 @@ Matrix Matrix::punkt_spiegel() {
     return spiegel;
 }
 
-
-void Matrix::test(){
-    std::cout << this->M << std::endl;
-
-}
-
+// Funktion, die überprüft ob Matrix in Zeilenstufenform ist
 
 bool Matrix::zsf(){
     int not_zero_i = -1;
@@ -294,6 +331,8 @@ bool Matrix::zsf(){
 
 // Auserhalb der Matrix Klasse
 
+// Skalarmultiplikationn
+
 Matrix operator*(double lambda, Matrix &mat) {
     Matrix* produkt = new Matrix(mat.N, mat.M);
     for (int i = 0; i < mat.M; i++) {
@@ -307,6 +346,8 @@ Matrix operator*(double lambda, Matrix &mat) {
 Matrix operator*(Matrix &mat, double lambda) {
     return lambda * mat;
 }
+
+//  Elementare Zeilenumformungen
 
 void zeilen_add(Matrix &mat, int a, int b, double lambda) {
     if (a < 0 || b < 0) {
@@ -327,5 +368,14 @@ void zeilen_skalar_mult(Matrix &mat, int a, double lambda) {
     for (int i = 0; i < mat.N; i++) {
         mat[a][i] = lambda * mat[a][i];
     }
+}
+
+// Hilfsfunktion zur Darstellung der Ergebnisse
+
+double runden(double d, int digits) {
+    double r1 = d * std::pow(10, digits);
+    int r2 = int(r1);
+    r1 = (1.0 * r2 / std::pow(10, digits));
+    return r1;
 }
 
