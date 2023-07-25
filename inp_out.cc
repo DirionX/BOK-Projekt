@@ -196,8 +196,8 @@ void calculate(std::string output, std::string input){
             mat.show();
             matrixToFile(output, mat);
         }   if (operations[i] == "*"){
-            int m = matrizen[i + 1]->N;
-            int n = matrizen[i]->M;
+            int n = matrizen[i + 1]->N;
+            int m = matrizen[i]->M;
             Matrix mat(m, n);
             mat = (*matrizen[i]) * (*matrizen[i+1]);
             mat.show();
