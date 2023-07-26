@@ -28,7 +28,7 @@ Manche haben nur eine Matrix als Input, andere zwei.
 
 _____________________
 
-"+" udn "*" können auch direkt mehrmals hintereinander ausgeführt werden, also:
+"+" und "*" können auch direkt mehrmals hintereinander ausgeführt werden, also:
 
 Matrix 1
 
@@ -47,4 +47,4 @@ ________________________
 
 Lässt man nun das Programm laufen wird in das Output-File das Ergebnis geschrieben, es wird auch nochmal in die Konsole ausgegeben.
 
-Das Inputfile im git enthält eine Bespieleingabe.
+Das Inputfile im git enthält eine Beispieleingabe.
