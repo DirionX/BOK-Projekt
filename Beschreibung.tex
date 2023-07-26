@@ -70,11 +70,11 @@ Wir mussten einige Hilfsfunktionen implementieren um diese Funktion zu implement
 Diese Funktionen werden in der Readfile Funktion verwendet, um einen Pointer auf eine Matrix zurückzugeben. \newline
 
 \noindent
-Alle diese Funktionen werden dann in der 'calculate' Funktion verwendet. Beim einlesen des Files werden std::vectoren angelegt die die Matrizen, bzw die Operationen enthalten. Die Rechnung wird ausgeführt und mithilfe der 'matrixToFile' Funktion in eine output.txt Datei geschrieben.
+Alle diese Funktionen werden dann in der 'calculate' Funktion verwendet. Beim Einlesen des Files werden std::vectoren angelegt die die Matrizen, bzw die Operationen enthalten. Die Rechnung wird ausgeführt und mithilfe der 'matrixToFile' Funktion in eine output.txt Datei geschrieben.
 
 \section*{Erfahrungen und Schwierigkeit}
 
-Eine große Schwierigkeit, auf die wir beim Programmieren gestoßen sind, war die Rückgabe von Objekten. Von Pyhton, waren wir es gewohnt, dass eine 'return Objekt' Anweisung reibungslos funktioniert. In C++ hat das jedoch nicht geklappt. Unsere Vermutung dazu war, dass das innerhalb einer Funktion erstellte Objekt das zurückgegeben werden soll, nach verlassen des Scopes nicht mehr existiert. Unsere Lösung für dieses Problem war es einen Matrixpointer mithilfe des Schlüsselwortes new zu erstellen. Wir waren uns länger uneinig, ob dieser Speicherplatz nun blockiert ist, aber Speicheranalysen mithilfe des Taskmanagers führten zu dem Ergebnis das der Speicher in der Tat  wieder freigegeben wird.
+Eine große Schwierigkeit, auf die wir beim Programmieren gestoßen sind, war die Rückgabe von Objekten. Von Python, waren wir es gewohnt, dass eine 'return Objekt' Anweisung reibungslos funktioniert. In C++ hat das jedoch nicht geklappt. Unsere Vermutung dazu war, dass das innerhalb einer Funktion erstellte Objekt das zurückgegeben werden soll, nach verlassen des Scopes nicht mehr existiert. Unsere Lösung für dieses Problem war es einen Matrixpointer mithilfe des Schlüsselwortes new zu erstellen. Wir waren uns länger uneinig, ob dieser Speicherplatz nun blockiert ist, aber Speicheranalysen mithilfe des Taskmanagers führten zu dem Ergebnis das der Speicher in der Tat  wieder freigegeben wird.
 
 
 
